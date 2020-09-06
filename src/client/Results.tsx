@@ -3,6 +3,7 @@ import React from "react";
 export const Results = (props: any) => {
   let quizState = props.quizState;
 
+  // gets 3 random questions from question bank and resets state
   function reset() {
     props.getRandomQuestions(props.quizState.questionBank);
   }
@@ -11,7 +12,7 @@ export const Results = (props: any) => {
     <div>
       Results
       <h1>Correct: {quizState.correct} </h1>
-      <h1>Wrong {quizState.wrong} : </h1>
+      <h1>Wrong: {quizState.wrong} </h1>
       <h1>Questions answered: {quizState.questions.length} </h1>
       <h1>
         Final Score:{" "}
