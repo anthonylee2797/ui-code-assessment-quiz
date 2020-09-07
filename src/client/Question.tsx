@@ -1,28 +1,34 @@
-import React, { useRef, createRef } from "react";
+import React, { useState, useEffect } from "react";
+import MultipleChoiceQuestion from './mcQuestion';
+import TextQuestion from './textQuestion';
+import constants from "./constants";
 
 export const Question = (props: any) => {
-  // variables
   const quizState = props.quizState;
   const currentQuestion = quizState.questions[quizState.questionNum];
-  const currentAnswer = currentQuestion.correct_answer;
-  let choices = [""];
+  const correctAnswer = currentQuestion.correct_answer;
 
-  // ref for text answer
-  let textInput = React.createRef<HTMLInputElement>();
-  // multipleChoice answer input
-  let radioInput: String;
+  // state
+  const [type, setType] = useState(null)
+  const [choices, setChoices] = useState([])
 
-  // Check if question is a text question or multiple choice quesiton
-  let text = false;
-  if (currentQuestion.type === "text") {
-    text = true;
-  } else {
-    text = false;
-    const randomIndex = Math.round(
-      Math.random() * currentQuestion.incorrect_answers.length
-    );
-    choices = [...currentQuestion.incorrect_answers];
-    choices.splice(randomIndex, 0, currentQuestion.correct_answer);
+  // Check if question is a text/mc/true or false
+  useEffect(randomizeChoices, [currentQuestion])
+
+  function randomizeChoices() {
+    if (currentQuestion.type === constants.QUESTION_TYPE.TEXT) {
+      setType(true)
+    } else if (currentQuestion.type === constants.QUESTION_TYPE.MULTIPLE) {
+      setType(false)
+      const randomIndex = Math.round(Math.random() * currentQuestion.incorrect_answers.length);
+      let choicesCopy = [...currentQuestion.incorrect_answers];
+      choicesCopy.splice(randomIndex, 0, currentQuestion.correct_answer)
+      setChoices(choicesCopy)
+    }
+    else {
+      setType(false)
+      setChoices(['True', 'False'])
+    }
   }
 
   // helper function, updating state whether answer is right/wrong
@@ -42,82 +48,15 @@ export const Question = (props: any) => {
     }
   }
 
-  // on form submit for multiple choice question, checks whether answer is right/wrong
-  function submitAnswer(e: any) {
-    e.preventDefault();
-
-    if (!radioInput) {
-      alert("You have not selected a choice");
-      return;
-    }
-
-    if (radioInput === currentAnswer) {
-      quizUpdate(true);
-    } else {
-      quizUpdate(false);
-    }
-
-    // resets radio buttons
-    Array.from(document.querySelectorAll("input")).forEach(
-      (el) => (el.checked = false)
-    );
-  }
-
-  // on form submit for text question,, checks whether answer is right/wrong
-  function submitTextAnswer(e: any) {
-    e.preventDefault();
-    const answer = textInput.current.value;
-
-    if (!answer) {
-      alert("You have not written an answer");
-      return;
-    }
-
-    if (answer.toLowerCase().trim() === currentAnswer.toLowerCase().trim()) {
-      quizUpdate(true);
-    } else {
-      quizUpdate(false);
-    }
-  }
-
-  // multipleChoiceQuestion
-  const multipleChoiceQuestion = (
-    <div>
-      {currentQuestion.question.replace(/&quot;/g, '"').replace(/&#039;/g, "'")}
-      <form>
-        {console.log(choices, "choices")}
-        {choices.map((choice: any) => (
-          <div>
-            <input
-              name="choice"
-              onClick={(e) => {
-                radioInput = e.currentTarget.value;
-              }}
-              className="radio-button"
-              value={choice}
-              type="radio"
-            />
-            <label>{choice}</label>
-          </div>
-        ))}
-        <button onClick={submitAnswer}>Next</button>
-      </form>
-    </div>
-  );
-
-  // text question
-  const textQuestion = (
-    <div>
-      {currentQuestion.question.replace(/&quot;/g, '"').replace(/&#039;/g, "'")}
-      <form onSubmit={submitTextAnswer}>
-        <input ref={textInput} type="text"></input>
-        <button type="submit">Next</button>
-      </form>
-    </div>
-  );
-
   // condtionally render either a multiple choice question or text question
-  return <div>{text ? textQuestion : multipleChoiceQuestion}</div>;
+  return (
+    <div>
+      <div dangerouslySetInnerHTML={{ __html: currentQuestion.question }} />
+      {type ? <TextQuestion quizUpdate={quizUpdate} correctAnswer={correctAnswer} /> : <MultipleChoiceQuestion choices={choices} correctAnswer={correctAnswer} quizUpdate={quizUpdate} />}
+    </div>
+  );
 };
 
 export default Question;
+
+

@@ -1,7 +1,8 @@
 import React from "react";
 
 export const Results = (props: any) => {
-  let quizState = props.quizState;
+  const quizState = props.quizState;
+  const score = Math.round((quizState.correct / quizState.questions.length) * 100)
 
   // gets 3 random questions from question bank and resets state
   function reset() {
@@ -14,10 +15,7 @@ export const Results = (props: any) => {
       <h1>Correct: {quizState.correct} </h1>
       <h1>Wrong: {quizState.wrong} </h1>
       <h1>Questions answered: {quizState.questions.length} </h1>
-      <h1>
-        Final Score:{" "}
-        {Math.round((quizState.correct / quizState.questions.length) * 100)} %
-      </h1>
+      <h1>Final Score: {score}%</h1>
       <button onClick={reset}>Reset</button>
     </div>
   );
