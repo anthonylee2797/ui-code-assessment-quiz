@@ -25,7 +25,7 @@ export const App = () => {
   }, []);
 
   // helper function to generate 3 random questions
-  async function getRandomQuestions(data: Array<Object>) {
+  function getRandomQuestions(data: Array<Object>) {
     const indexes: Array<Number> = [];
     const randomQuestions: Array<Object> = [];
 
@@ -38,7 +38,6 @@ export const App = () => {
     }
 
     setQuizState({
-      ...quizState,
       questionNum: 0,
       correct: 0,
       wrong: 0,
@@ -57,18 +56,9 @@ export const App = () => {
       <h2>Welcome to UI Team code assessment!</h2>
 
       {/* Conditionally render either Results Component or Question component on whether they're questions left in the pool */}
-      {quizState.questionNum > quizState.questions.length - 1 ? (
-        <Results
-          quizState={quizState}
-          getRandomQuestions={getRandomQuestions}
-          setQuizState={setQuizState}
-        />
-      ) : (
-          <Question
-            quizState={quizState}
-            setQuizState={setQuizState}
-          />
-        )}
+      {quizState.questionNum > quizState.questions.length - 1
+        ? <Results quizState={quizState} getRandomQuestions={getRandomQuestions} />
+        : <Question quizState={quizState} setQuizState={setQuizState} />}
     </div>
   );
 };

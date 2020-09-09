@@ -10,29 +10,18 @@ interface Props {
 
 export const Question = ({ quizState, setQuizState }: Props) => {
   const currentQuestion = quizState.questions[quizState.questionNum];
-  const correctAnswer = currentQuestion.correct_answer;
-
   const [type, setType] = useState(null)
-  const [choices, setChoices] = useState([])
 
   // Check if question is a text/mc/true or false
-  useEffect(randomizeChoices, [currentQuestion])
+  useEffect(setQuestionType, [currentQuestion])
 
-  function randomizeChoices() {
+  function setQuestionType() {
     if (currentQuestion.type === constants.QUESTION_TYPE.TEXT) {
       setType(true)
     } else if (currentQuestion.type === constants.QUESTION_TYPE.MULTIPLE) {
       setType(false)
-
-      // randomizes choices for multiple choice questions
-      const randomIndex = Math.round(Math.random() * currentQuestion.incorrect_answers.length);
-      let choicesCopy = [...currentQuestion.incorrect_answers];
-      choicesCopy.splice(randomIndex, 0, currentQuestion.correct_answer)
-      setChoices(choicesCopy)
-    }
-    else {
+    } else if (currentQuestion.type === constants.QUESTION_TYPE.BOOLEAN) {
       setType(false)
-      setChoices(['True', 'False'])
     }
   }
 
@@ -57,7 +46,9 @@ export const Question = ({ quizState, setQuizState }: Props) => {
   return (
     <div>
       <h3 className='question-name' dangerouslySetInnerHTML={{ __html: currentQuestion.question }} />
-      {type ? <TextQuestion quizUpdate={quizUpdate} correctAnswer={correctAnswer} /> : <MultipleChoiceQuestion choices={choices} correctAnswer={correctAnswer} quizUpdate={quizUpdate} />}
+      {type
+        ? <TextQuestion quizUpdate={quizUpdate} currentQuestion={currentQuestion} />
+        : <MultipleChoiceQuestion currentQuestion={currentQuestion} quizUpdate={quizUpdate} />}
     </div>
   );
 };

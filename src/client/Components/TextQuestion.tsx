@@ -2,11 +2,12 @@ import React, { useState } from "react";
 
 interface Props {
   quizUpdate(correct: boolean): any
-  correctAnswer: String
+  currentQuestion: any
 }
 
-const TextQuestion = ({ quizUpdate, correctAnswer }: Props) => {
+const TextQuestion = ({ quizUpdate, currentQuestion }: Props) => {
   const [textAnswer, setTextAnswer] = useState("");
+  const correctAnswer = currentQuestion.correct_answer;
 
   // on form submit for text question,, checks whether answer is right/wrong
   function submitTextAnswer(e: any) {
@@ -19,6 +20,7 @@ const TextQuestion = ({ quizUpdate, correctAnswer }: Props) => {
 
     const isAnswerCorrect = textAnswer.toLowerCase().trim() === correctAnswer.toLowerCase().trim();
     quizUpdate(isAnswerCorrect);
+    setTextAnswer("")
   }
 
   function handleUserInputChange(e: any) {

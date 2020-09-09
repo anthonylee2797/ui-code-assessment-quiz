@@ -3,26 +3,15 @@ import React from "react";
 interface Props {
   quizState: any
   getRandomQuestions(Array: Object): any
-  setQuizState: any
 }
 
-export const Results = ({ quizState, getRandomQuestions, setQuizState }: Props) => {
+export const Results = ({ quizState, getRandomQuestions }: Props) => {
 
   const score = Math.round((quizState.correct / quizState.questions.length) * 100)
 
   // gets 3 random questions from question bank and resets state
   function reset() {
-
     getRandomQuestions(quizState.questionBank);
-
-    // setQuizState({
-    //   ...quizState,
-    //   questionNum: 0,
-    //   correct: 0,
-    //   wrong: 0
-    // });
-
-    console.log(quizState, 'after setting quiz state in reset')
   }
 
   return (

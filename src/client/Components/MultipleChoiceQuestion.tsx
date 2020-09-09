@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import constants from "../constants";
 
 interface Props {
-  choices: Array<String>,
-  correctAnswer: String,
+  currentQuestion: any
   quizUpdate(correct: boolean): any
 }
 
-const MultipleChoiceQuestion = ({ choices, correctAnswer, quizUpdate }: Props) => {
+const MultipleChoiceQuestion = ({ currentQuestion, quizUpdate }: Props) => {
   const [mcUserAnswer, setmcUserAnswer] = useState("");
+  const [choices, setChoices] = useState([])
+  const correctAnswer = currentQuestion.correct_answer;
+
+  useEffect(setChoicesHelper, [currentQuestion])
+
+  function setChoicesHelper() {
+    if (currentQuestion.type === constants.QUESTION_TYPE.MULTIPLE) {
+      const randomIndex = Math.round(Math.random() * currentQuestion.incorrect_answers.length);
+      let choicesCopy = [...currentQuestion.incorrect_answers];
+      choicesCopy.splice(randomIndex, 0, currentQuestion.correct_answer)
+      setChoices(choicesCopy)
+    }
+    else if (currentQuestion.type === constants.QUESTION_TYPE.BOOLEAN) {
+      setChoices(['True', 'False'])
+    }
+  }
 
   // on form submit for multiple choice question, checks whether answer is right/wrong
   function submitAnswer(e: any) {
@@ -18,7 +34,6 @@ const MultipleChoiceQuestion = ({ choices, correctAnswer, quizUpdate }: Props) =
       return;
     }
 
-    console.log(mcUserAnswer, correctAnswer)
     const isAnswerCorrect = mcUserAnswer === correctAnswer;
     quizUpdate(isAnswerCorrect);
 
