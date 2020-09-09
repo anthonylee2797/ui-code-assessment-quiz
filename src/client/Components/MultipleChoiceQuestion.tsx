@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 
-const MultipleChoiceQuestion = (props: any) => {
+interface Props {
+  choices: Array<String>,
+  correctAnswer: String,
+  quizUpdate(correct: boolean): any
+}
+
+const MultipleChoiceQuestion = ({ choices, correctAnswer, quizUpdate }: Props) => {
   const [mcUserAnswer, setmcUserAnswer] = useState("");
 
   // on form submit for multiple choice question, checks whether answer is right/wrong
@@ -12,28 +18,36 @@ const MultipleChoiceQuestion = (props: any) => {
       return;
     }
 
-    const isAnswerCorrect = mcUserAnswer === props.correctAnswer;
-    props.quizUpdate(isAnswerCorrect);
+    console.log(mcUserAnswer, correctAnswer)
+    const isAnswerCorrect = mcUserAnswer === correctAnswer;
+    quizUpdate(isAnswerCorrect);
 
-    // resets radio buttons
+
+    // resets radio buttons & choice
     Array.from(document.querySelectorAll("input")).forEach(
       (el) => (el.checked = false)
     );
+
+    setmcUserAnswer('')
+  }
+
+  function handleUserInputChange(e: any) {
+    setmcUserAnswer(e.currentTarget.value)
   }
 
   return (
-    <form onSubmit={submitAnswer}>
-      {props.choices.map((choice: any, index: Number) => (
+    <form className='question-form' onSubmit={submitAnswer}>
+      {choices.map((choice: any, index: Number) => (
         <div key={`c${index}`}>
           <label>
             <input
               name="choice"
-              onClick={(e) => { setmcUserAnswer(e.currentTarget.value) }}
+              onClick={handleUserInputChange}
               className="radio-button"
               value={choice}
               type="radio"
             />
-            {choice}
+            <span dangerouslySetInnerHTML={{ __html: choice }} />
           </label>
         </div>
       ))}

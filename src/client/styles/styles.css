@@ -1,0 +1,42 @@
+
+
+input {
+  margin: 5px 5px 5px 0;
+}
+
+label {
+  margin-left: 0px;
+}
+
+button {
+  font-size: 16px;
+  display: block;
+  color: white;
+  background-color: #4285f4;
+  padding: 8px 18px;
+  margin-top: 1%;
+  border-style: none;
+  cursor: pointer;
+}
+
+.reset-quiz {
+  margin-top: 10px;
+}
+
+.question-name{
+  margin-bottom: 5px;
+}
+
+.question-form {
+  font-size: 18px;
+}
+
+.results h3 {
+  margin: 5px 0px;
+  color: rgb(49, 49, 49);
+}
+
+.results h1 {
+  margin-bottom: 10px;
+}
+

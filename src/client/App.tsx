@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Question from "./Question";
-import Results from "./Results";
+import Question from "./Components/Question";
+import Results from "./Components/Results";
 
 export const App = () => {
   const [quizState, setQuizState] = useState({
@@ -10,6 +10,8 @@ export const App = () => {
     wrong: 0,
     questionBank: [],
   });
+
+  const NUMBER_OF_QUESTIONS = 3
 
   // upon load, we will make an api call and retrieve questions and store in state
   useEffect(() => {
@@ -23,17 +25,18 @@ export const App = () => {
   }, []);
 
   // helper function to generate 3 random questions
-  function getRandomQuestions(data: any) {
-    const indexes: any = [];
-    const randomQuestions: any = [];
+  async function getRandomQuestions(data: Array<Object>) {
+    const indexes: Array<Number> = [];
+    const randomQuestions: Array<Object> = [];
 
-    while (randomQuestions.length < 3) {
+    while (randomQuestions.length < NUMBER_OF_QUESTIONS) {
       const index = Math.floor(Math.random() * data.length);
       if (!indexes.includes(index)) {
         indexes.push(index);
         randomQuestions.push(data[index]);
       }
     }
+
     setQuizState({
       ...quizState,
       questionNum: 0,
